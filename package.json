@@ -1,0 +1,110 @@
+{
+  "name": "@advanced-rest-client/highlight",
+  "description": "A set of tools to work with markdown content and other syntax highlighting.",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "module": "index.js",
+  "keywords": [
+    "web-components",
+    "marked"
+  ],
+  "author": {
+    "name": "Pawel Uchida-Psztyc",
+    "email": "pawel.psztyc@mulesoft.com"
+  },
+  "contributors": [
+    "Your name can be here!"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/advanced-rest-client/highlight.git"
+  },
+  "bugs": {
+    "url": "https://github.com/advanced-rest-client/highlight/issues",
+    "email": "arc@mulesoft.com"
+  },
+  "dependencies": {
+    "@advanced-rest-client/arc-events": "^0.2.17",
+    "dompurify": "^2.2.9",
+    "lit-element": "^2.5.1",
+    "lit-html": "^1.4.1",
+    "marked": "^2.0.7",
+    "prismjs": "^1.23.0"
+  },
+  "devDependencies": {
+    "@advanced-rest-client/arc-demo-helper": "^3.0.2",
+    "@anypoint-web-components/anypoint-styles": "^1.0.1",
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@open-wc/eslint-config": "^4.3.0",
+    "@open-wc/testing": "^2.5.33",
+    "@types/dompurify": "^2.2.2",
+    "@types/marked": "^2.0.3",
+    "@types/prismjs": "^1.16.5",
+    "@web/dev-server": "^0.1.17",
+    "@web/test-runner": "^0.13.8",
+    "@web/test-runner-playwright": "^0.8.6",
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "sinon": "^11.1.1",
+    "typescript": "^4.3.2",
+    "typescript-lit-html-plugin": "^0.9.0"
+  },
+  "scripts": {
+    "start": "web-dev-server --app-index demo/index.html --node-resolve --open --watch --root-dir .",
+    "lint:eslint": "eslint --ext .js,.html . --ignore-path .gitignore",
+    "format:eslint": "eslint --ext .js,.html . --fix --ignore-path .gitignore",
+    "lint:types": "tsc",
+    "lint": "npm run lint:eslint",
+    "format": "npm run format:eslint",
+    "test": "web-test-runner test/**/*.test.js --coverage --node-resolve --playwright --browsers chromium firefox webkit",
+    "test:watch": "web-test-runner test/**/*.test.js --node-resolve --watch --playwright --browsers chromium",
+    "gen:wc": "wca analyze \"*.js\" --outFile custom-elements.json"
+  },
+  "eslintConfig": {
+    "extends": [
+      "@open-wc/eslint-config",
+      "eslint-config-prettier"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "demo/**/*.js",
+          "test/**/*.js",
+          "**/demo/**/*.html"
+        ],
+        "rules": {
+          "no-console": "off",
+          "no-unused-expressions": "off",
+          "no-plusplus": "off",
+          "no-param-reassing": "off",
+          "class-methods-use-this": "off",
+          "import/no-extraneous-dependencies": "off"
+        }
+      },
+      {
+        "files": [
+          "**/*.js"
+        ],
+        "rules": {
+          "no-plusplus": "off",
+          "no-continue": "off",
+          "class-methods-use-this": "off"
+        }
+      }
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix"
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+  <title>prism-highlight demo</title>
+
+  <style>
+    html {
+      --error-color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="vertical-section-container centered">
+    <h3>The prism-highlight - markdown</h3>
+    <arc-demo-helper>
+      <template>
+        <prism-highlight id="c1" lang="markdown"></prism-highlight>
+        <script>
+        document.querySelector('#c1').code = '# Test highlight\nHello world!\n[link](https://domain.com)';
+        </script>
+      </template>
+    </arc-demo-helper>
+    
+    <h3>The prism-highlight - JSON</h3>
+    <arc-demo-helper>
+      <template>
+        <prism-highlight id="cJson" lang="json"></prism-highlight>
+        <script>
+        document.querySelector('#cJson').code = '{\n\t"name": "Pawel Uchida-Psztyc",\n\t"occupation": "Software Engineer"\n}';
+        </script>
+      </template>
+    </arc-demo-helper>
+
+    <h3>The prism-highlight - XML</h3>
+    <arc-demo-helper>
+      <template>
+        <prism-highlight id="cXml" lang="xml"></prism-highlight>
+        <script>
+        document.querySelector('#cXml').code =
+          '<Person valid="true">\n\t<name>Pawel Uchida-Psztyc</name>\n\t<occupation>Software Engineer</occupation>\n</Person>';
+        </script>
+      </template>
+    </arc-demo-helper>
+    <h3>The prism-highlight - javascript</h3>
+    <arc-demo-helper>
+      <template>
+        <prism-highlight id="c2" lang="javascript"></prism-highlight>
+        <script>
+        document.querySelector('#c2').code = 'function(param) {\n' +
+          '  param.forEach((item) => this._parseItem(item))\n' +
+          '  const test = null;\n' +
+          '}';
+        </script>
+      </template>
+    </arc-demo-helper>
+
+    <h3>The prism-highlight - HTML</h3>
+    <arc-demo-helper>
+      <template>
+        <prism-highlight id="c3" lang="markup"></prism-highlight>
+        <script>
+          (async () => {
+            const response = await fetch(window.location.href);
+            const data = await response.text();
+            document.querySelector('#c3').code = `${data}\n${data}\n${data}`;
+          })();
+        </script>
+      </template>
+    </arc-demo-helper>
+  </div>
+
+  <script type="module" src="./prism-highlight.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    .centered {
+      max-width: 550px;
+      padding: 0;
+      overflow: auto;
+    }
+    h1 {
+      margin-left: 30px;
+    }
+    h3 {
+      color: #757575;
+      margin-left: 30px;
+    }
+    arc-marked {
+      display: block;
+      background-color: #ECEFF1;
+      padding: 10px 30px;
+      margin-bottom: 10px;
+    }
+    .markdown-html.custom p {
+      padding-left: 24px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="vertical-section vertical-section-container centered" role="main">
+    <h1>&lt;arc-marked&gt;</h1>
+
+    <section id="config">
+      <h3>Configuration</h3>
+      <label><input type="checkbox" id="breaks">breaks</label>
+      <label><input type="checkbox" id="pedantic">pedantic</label>
+      <label><input type="checkbox" id="sanitize">sanitize</label>
+      <label><input type="checkbox" id="disableRemoteSanitization">disableRemoteSanitization</label>
+      <label><input type="checkbox" id="smartypants">smartypants</label>
+    </section>
+
+    <section>
+      <h3>Inline Text</h3>
+      <arc-marked>
+        <div slot="markdown-html"></div>
+        <script type="text/markdown">
+          ## Markdown Renderer
+
+           <div>This is a HTML container</div>
+
+           JSON example:
+
+           ```json
+           {
+             "test": "true"
+           }
+           ```
+
+           ## Security
+
+           [Link](http://url.com" onclick="alert('This should not happen')")
+
+           <a href="http://url.com" onclick="alert('This should not happen')">Link</a>
+
+          <table><tr><td>
+          <pre>
+          **Hello**,
+
+          _world_.
+          </pre>
+          </td></tr></table>
+
+          Example:
+
+          ```html
+          <paper-toolbar>
+           <paper-icon-button icon="menu"></paper-icon-button>
+           <div class="title">Title</div>
+           <paper-icon-button icon="more"></paper-icon-button>
+          </paper-toolbar>
+          ```
+
+          _Nifty_ features.
+       </script>
+      </arc-marked>
+    </section>
+
+    <section>
+      <h3>Text via Attribute, with custom styling</h3>
+
+      <arc-marked markdown="***Bold and italic***">
+        <div slot="markdown-html" class="markdown-html custom"></div>
+      </arc-marked>
+    </section>
+
+    <section>
+      <h3>Remote content</h3>
+
+      <arc-marked id="remoteContent" disableRemoteSanitization>
+        <div class="markdown-html"></div>
+        <script type="text/markdown" src="./example.md">
+          Loading markdown...
+       </script>
+      </arc-marked>
+    </section>
+  </div>
+
+  <script type="module" src="./arc-marked.js"></script>
+</body>
+
+</html>
