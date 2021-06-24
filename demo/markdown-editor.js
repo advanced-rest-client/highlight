@@ -1,13 +1,14 @@
 import { html } from 'lit-html';
 import { DemoPage } from '@advanced-rest-client/arc-demo-helper';
 import '@advanced-rest-client/arc-demo-helper/arc-interactive-demo.js';
+import '@anypoint-web-components/anypoint-button/anypoint-button.js';
 import '../markdown-editor.js';
 import { MarkdownStyles } from '../index.js';
 
 class ComponentPage extends DemoPage {
   constructor() {
     super();
-    this.initObservableProperties(['markdown']);
+    this.initObservableProperties(['markdown', 'result']);
     this.componentName = 'markdown-editor';
     this.demoStates = ['Material'];
 
@@ -154,6 +155,11 @@ _You **can** combine them_
 `;
   }
 
+  generatePreview() {
+    const element = document.querySelector('markdown-editor');
+    this.result = element.toMarkdown();
+  }
+
   _demoTemplate() {
     const { demoStates, darkThemeActive, markdown } = this;
     return html`
@@ -170,9 +176,20 @@ _You **can** combine them_
       >
         <markdown-editor .markdown="${markdown}" slot="content" toolbar>
           <div slot="markdown-html"></div>
+          <anypoint-button slot="post-toolbar" style="margin-left: auto" @click="${this.generatePreview}">Save</anypoint-button>
         </markdown-editor>
       </arc-interactive-demo>
     </section>
+    `;
+  }
+
+  _previewTemplate() {
+    const { result } = this;
+    if (!result) {
+      return '';
+    }
+    return html`
+    <pre class="result"><code>${result}</code></pre>
     `;
   }
 
@@ -180,6 +197,7 @@ _You **can** combine them_
     return html`
     <h2 class="centered main">Markdown editor</h2>
     ${this._demoTemplate()}
+    ${this._previewTemplate()}
     `;
   }
 }

@@ -266,7 +266,7 @@ export default class ArcMarkedElement extends LitElement {
    * @returns {HTMLElement}
    */
   get outputElement() {
-    const slot = /** @type HTMLSlotElement */ (this.shadowRoot.querySelector('slot'));
+    const slot = /** @type HTMLSlotElement */ (this.shadowRoot.querySelector('slot[name="markdown-html"]'));
     if (!slot) {
       return null;
     }

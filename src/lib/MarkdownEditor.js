@@ -85,6 +85,10 @@ export class MarkdownEditor {
       return false;
     }
     const codeContent = preContent.substr(index + 1);
+    if (!codeContent || codeContent === '`') {
+      // don't create empty inline-code blocks as this may be part of creating a code block.
+      return false;
+    }
     const postContent = textContent.substr(startOffset);
     const beforeCodeContent = preContent.substr(0, index);
     // the result: 
@@ -116,19 +120,6 @@ export class MarkdownEditor {
     const code = document.createElement('code');
     range.surroundContents(code);
     return true;
-    // const { startContainer, endContainer, startOffset, endOffset } = range;
-    // const { textContent } = startContainer;
-    // code.innerHTML = textContent.substr(startOffset, endOffset - startOffset);
-    // const before = textContent.substr(0, startOffset);
-    // const after = textContent.substr(endOffset);
-    // this.replaceTextNodeContent(/** @type Text */ (startContainer), before, code, after);
-    // const r = new Range();
-    // r.selectNode(code.nextSibling);
-    // r.setStart(code.nextSibling, 1);
-    // r.setEnd(code.nextSibling, 1);
-    // const selection = window.getSelection();
-    // selection.removeAllRanges();
-    // selection.addRange(r);
   }
 
   /**
@@ -142,43 +133,6 @@ export class MarkdownEditor {
       this.log(`Prohibiting Enter`);
       e.preventDefault();
     }
-    // const { endContainer } = range;
-    // const { parentElement } = endContainer;
-    // if (parentElement.localName === 'li') {
-    //   e.preventDefault();
-    //   if (range.collapsed && parentElement.textContent.trim()) {
-    //     // move what's behind the cursor to the new line
-    //   }
-    //   const item = this.appendListItem(/** @type HTMLLIElement */ (parentElement));
-    //   this.selectCollapsed(item);
-    //   return;
-    // }
-    // const typedEnd = /** @type HTMLElement */ (endContainer);
-    // if (typedEnd.localName === 'li') {
-    //   if (!typedEnd.textContent.trim()) {
-    //     e.preventDefault();
-    //     const line = this.insertNewLine(typedEnd.parentElement, true)
-    //     typedEnd.parentElement.removeChild(typedEnd);
-    //     this.selectCollapsed(line);
-    //     return;
-    //   }
-    // }
-    // if (['ul', 'ol'].includes(typedEnd.localName)) {
-    //   e.preventDefault();
-    //   const item = typedEnd.childNodes[range.endOffset - 1];
-    //   const line = this.insertNewLine(typedEnd.parentElement, true)
-    //   typedEnd.removeChild(item);
-    //   this.selectCollapsed(line);
-    //   return;
-    // }
-    // const parent = this.findParentBlockElement(endContainer);
-    // if (parent) {
-    //   e.preventDefault();
-    //   const p = document.createElement('p');
-    //   p.innerHTML = '<br/>';
-    //   parent.insertAdjacentElement('afterend', p);
-    //   this.selectCollapsed(p);
-    // }
   }
 
   /**
@@ -192,12 +146,19 @@ export class MarkdownEditor {
    * @returns {boolean} True when the action is performed.
    */
   enterFromRange(range, shiftKey) {
-    const { startContainer, endContainer } = range;
+    const { startContainer, endContainer, collapsed, startOffset } = range;
     if (startContainer !== endContainer) {
       this.log('Unable to process Enter key when multiple containers are selected.');
       return false;
     }
-    // const typedEnd = /** @type HTMLElement */ (startContainer);
+    if (collapsed) {
+      const { textContent } = startContainer;
+      const preContent = textContent.substr(0, startOffset).trim();
+      if (/^```(\S+)?$/.test(preContent)) {
+        this.replaceCodeBlock(range);
+        return true;
+      }
+    }
     const blockParent = this.findParentNonTextElement(startContainer);
     if (!blockParent) {
       return false;
@@ -252,7 +213,33 @@ export class MarkdownEditor {
       const header = this.addHeadline(preContent.length, typedElement);
       typedElement.parentNode.removeChild(typedElement);
       this.selectCollapsed(header);
+      return;
     }
+    if (/^```(\S+)?$/.test(preContent)) {
+      e.preventDefault();
+      this.replaceCodeBlock(range);
+    }
+    // console.log(preContent);
+  }
+
+  /**
+   * Replaces current line with a code block.
+   * This is called when a "```" with optional language definition is detected.
+   * @param {Range} range
+   */
+  replaceCodeBlock(range) {
+    const { startContainer, startOffset } = range;
+    const { textContent } = startContainer;
+    const preContent = textContent.substr(0, startOffset).trim();
+    const lang = preContent.replace('```', '').trim();
+
+    const pre = document.createElement(`pre`);
+    const code = document.createElement(`code`);
+    code.classList.add(`language-${lang || 'none'}`);
+    pre.appendChild(code);
+    code.textContent = ' ';
+    this.replaceNode(this.findParentBlockElement(startContainer), pre);
+    this.selectContent(code.firstChild);
   }
 
   /**
@@ -454,6 +441,19 @@ export class MarkdownEditor {
       range.setStart(node, 0);
     }
     range.collapse();
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  /**
+   * Selects a content in the node and sets the position at the end of the selection.
+   * @param {Node} node
+   */
+  selectContent(node) {
+    const range = new Range();
+    range.setStart(node, 1);
+    range.setEndBefore(node);
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);

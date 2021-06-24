@@ -4,10 +4,14 @@
     "camelcase",
     "clike",
     "dompurify",
+    "formatblock",
     "highlightjs",
+    "insertorderedlist",
+    "insertunorderedlist",
     "markedloaded",
     "markedloaderror",
     "markedrendercomplete",
+    "outdent",
     "prismjs",
     "unsanitized"
   ]
