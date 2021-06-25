@@ -160,6 +160,18 @@ _You **can** combine them_
     this.result = element.toMarkdown();
   }
 
+  /**
+   * @param {Event} e
+   */
+  specialAction(e) {
+    e.preventDefault();
+    const element = document.querySelector('markdown-editor');
+    const { editor } = element.editor;
+    // editor.focusFirstAvailable(document.getElementById('content'));
+    // editor.selectNodeContent(document.getElementById('content').querySelector('h1'));
+    editor.nextLine();
+  }
+
   _demoTemplate() {
     const { demoStates, darkThemeActive, markdown } = this;
     return html`
@@ -174,9 +186,10 @@ _You **can** combine them_
         @state-changed="${this._demoStateHandler}"
         ?dark="${darkThemeActive}"
       >
-        <markdown-editor .markdown="${markdown}" slot="content" toolbar>
-          <div slot="markdown-html"></div>
+        <markdown-editor .markdown="${markdown}" slot="content" toolbar contextToolbarEnabled>
+          <div slot="markdown-html" id="content"></div>
           <anypoint-button slot="post-toolbar" style="margin-left: auto" @click="${this.generatePreview}">Save</anypoint-button>
+          <anypoint-button slot="post-toolbar" @mousedown="${this.specialAction}">Special</anypoint-button>
         </markdown-editor>
       </arc-interactive-demo>
     </section>

@@ -1,7 +1,9 @@
 import { html, render } from "lit-html";
-import { EditorPlugin } from "../lib/EditorPlugin.js";
+import { EditorPlugin } from "../EditorPlugin.js";
 import defaultActions from './DefaultActions.js';
 import listStyles from './ActionsTooltip.styles.js';
+
+/** @typedef {import('../types').PluginExecuteOptions} PluginExecuteOptions */
 
 const createTimer = Symbol('createTimer');
 const createTooltip = Symbol('createTooltip');
@@ -21,6 +23,13 @@ const updateActivated = Symbol('updateActivated');
 const hideTitleSelector = Symbol('hideTitleSelector');
 
 export class ActionsTooltip extends EditorPlugin {
+  /**
+   * @returns {string[]} A list of actions that this plugin support.
+   */
+   get actions() {
+    return ['selection'];
+  }
+
   constructor() {
     super();
     this.createTimeout = 200;
@@ -36,9 +45,10 @@ export class ActionsTooltip extends EditorPlugin {
   }
 
   /**
-   * @param {HTMLElement} container
+   * @param {PluginExecuteOptions} params The execution parameters
+   * @returns {void}
    */
-  execute(container) {
+  execute({container}) {
     this[setContainer](container);
     const selection = document.getSelection();
     if (selection.rangeCount === 0) {

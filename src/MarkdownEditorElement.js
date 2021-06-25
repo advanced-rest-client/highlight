@@ -2,22 +2,26 @@ import { html } from 'lit-element';
 import HtmlMd from '@pawel-up/html.md';
 import '@anypoint-web-components/anypoint-button/anypoint-icon-button.js';
 import ArcMarkedElement, { outputElement } from "./ArcMarkedElement.js";
-import { MarkdownEditor } from './lib/MarkdownEditor.js';
+import { MarkdownEditor } from './md-editor/MarkdownEditor.js';
 import editorStyles from './styles/MdEditor.js';
 import { formatBold, formatClear, formatIndentDecrease, formatIndentIncrease, formatItalic, formatListBulleted, formatListNumbered, formatQuote, formatStrikeThrough, formatUnderline, horizontalRule, insertLink } from './EditorIcons.js';
-import { MarkdownSelection } from './lib/MarkdownSelection.js';
-import { ActionsTooltip } from './plugins/ActionsTooltip.js';
+import { ActionsTooltip } from './md-editor/plugins/ActionsTooltip.js';
+import DeletePlugin from './md-editor/plugins/DeletePlugin.js';
+import BackquotePlugin from './md-editor/plugins/BackquotePlugin.js';
+import EnterPlugin from './md-editor/plugins/EnterPlugin.js';
+import SpacePlugin from './md-editor/plugins/SpacePlugin.js';
 
 /** @typedef {import('lit-html').TemplateResult} TemplateResult */
-/** @typedef {import('./lib/EditorPlugin').EditorPlugin} EditorPlugin */
+/** @typedef {import('./md-editor/EditorPlugin').EditorPlugin} EditorPlugin */
 
 export const editorValue = Symbol('keyupHandler');
 export const toolbarTemplate = Symbol('toolbarTemplate');
 export const execAction = Symbol('execAction');
 export const inputHandler = Symbol('inputHandler');
 export const createLinkAction = Symbol('createLinkAction');
-export const selectionValue = Symbol('selectionValue');
 export const toolbarValue = Symbol('toolbarValue');
+export const registerPlugins = Symbol('registerPlugins');
+export const contextToolbarEnabledValue = Symbol('contextToolbarEnabledValue');
 
 export default class MarkdownEditorElement extends ArcMarkedElement {
   /**
@@ -30,10 +34,12 @@ export default class MarkdownEditorElement extends ArcMarkedElement {
       return;
     }
     if (old) {
-      this[selectionValue].unregisterPlugin('selection', old);
+      this[editorValue].unregisterPlugin(old);
     }
     this[toolbarValue] = value;
-    this[selectionValue].registerPlugin('selection', value);
+    if (value) {
+      this[editorValue].registerPlugin(value);
+    }
   }
 
   /**
@@ -43,20 +49,76 @@ export default class MarkdownEditorElement extends ArcMarkedElement {
     return this[toolbarValue];
   }
 
+  /**
+   * Registers a context selection toolbar plugin
+   * @param {boolean} value
+   */
+  set contextToolbarEnabled(value) {
+    const old = this[contextToolbarEnabledValue];
+    if (old === value) {
+      return;
+    }
+    this[contextToolbarEnabledValue] = value;
+    this.requestUpdate('contextToolbarEnabled', old);
+    if (value) {
+      this.contextToolbar = new ActionsTooltip();
+    }
+  }
+
+  /**
+   * @returns {boolean|undefined}
+   */
+  get contextToolbarEnabled() {
+    return this[contextToolbarEnabledValue];
+  }
+
+  /**
+   * @returns {boolean} Whether the editor is in the debug mode.
+   */
+  get debug() {
+    return this[editorValue].debug;
+  }
+
+  /**
+   * @param {boolean} value Whether the editor is in the debug mode.
+   */
+  set debug(value) {
+    const old = this.debug;
+    if (old === value) {
+      return;
+    }
+    this[editorValue].debug = value;
+    this.requestUpdate('debug', old);
+  }
+
+  /**
+   * @returns {MarkdownEditor} A reference to the MarkdownEditor instance.
+   */
+  get editor() {
+    return this[editorValue];
+  }
+
   static get properties() {
     return {
       /** 
        * When set it renders a toolbar with commands.
        */
       toolbar: { type: Boolean, reflect: true },
+      /** 
+       * When set it registers the default text context tooltip.
+       */
+      contextToolbarEnabled: { type: Boolean, reflect: true },
+      /**  
+       * Whether the editor is in the debug mode.
+       */
+      debug: { type: Boolean, reflect: true },
     };
   }
 
   constructor() {
     super();
-    this[editorValue] = new MarkdownEditor();
-    this[editorValue].debug = true;
-    this[selectionValue] = new MarkdownSelection(this);
+    this[editorValue] = new MarkdownEditor(this);
+    // this[editorValue].debug = true;
     /** @type {boolean} */
     this.toolbar = undefined;
   }
@@ -66,16 +128,18 @@ export default class MarkdownEditorElement extends ArcMarkedElement {
     if (!this.hasAttribute('contentEditable')) {
       this.setAttribute('contentEditable', 'true');
     }
-    this.addEventListener('keydown', this[editorValue].keydownHandler);
-    this[selectionValue].listen(this.ownerDocument);
-    this.contextToolbar = new ActionsTooltip();
+    if (this.contextToolbarEnabled) {
+      this.contextToolbar = new ActionsTooltip();
+    }
+    this[editorValue].listen();
+    this[registerPlugins]();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('keydown', this[editorValue].keydownHandler);
-    this[selectionValue].unlisten(this.ownerDocument);
     this.contextToolbar = undefined;
+    this[editorValue].unlisten();
+    this[editorValue].unregisterAllPlugins();
   }
 
   /**
@@ -85,6 +149,17 @@ export default class MarkdownEditorElement extends ArcMarkedElement {
   toMarkdown() {
     const factory = new HtmlMd();
     return factory.generate(this[outputElement]);
+  }
+
+  /**
+   * Registers editor plugins.
+   */
+  [registerPlugins]() {
+    const ed = this[editorValue];
+    ed.registerPlugin(new BackquotePlugin());
+    ed.registerPlugin(new DeletePlugin());
+    ed.registerPlugin(new EnterPlugin());
+    ed.registerPlugin(new SpacePlugin());
   }
 
   /**

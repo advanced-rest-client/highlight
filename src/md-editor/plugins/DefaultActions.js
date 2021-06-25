@@ -1,4 +1,4 @@
-import { formatBold, formatItalic, formatUnderline, title } from "../EditorIcons.js";
+import { formatBold, formatItalic, formatUnderline, title } from "../../EditorIcons.js";
 
 const actions = [
   {
