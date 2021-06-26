@@ -2,12 +2,12 @@
 /* eslint-disable no-await-in-loop */
 import { fixture, assert, html, nextFrame } from '@open-wc/testing';
 import { executeServerCommand, sendKeys } from '@web/test-runner-commands';
-// import sinon from 'sinon';
-import '../markdown-editor.js';
-import { editorValue } from '../src/MarkdownEditorElement.js';
-import { ContentEditableEditor } from '../src/md-editor/ContentEditableEditor.js';
+import sinon from 'sinon';
+import '../../markdown-editor.js';
+import { editorValue } from '../../src/MarkdownEditorElement.js';
+import { ContentEditableEditor } from '../../src/md-editor/ContentEditableEditor.js';
 
-/** @typedef {import('..').MarkdownEditorElement} MarkdownEditorElement */
+/** @typedef {import('../..').MarkdownEditorElement} MarkdownEditorElement */
 
 describe('MarkdownEditorElement', () => {
   const contentEditor = new ContentEditableEditor();
@@ -62,6 +62,16 @@ https://domain.com
       </markdown-editor>`);
   }
 
+  /**
+   * @returns {Promise<MarkdownEditorElement>}
+   */
+  async function debugFixture() {
+    const md = `# title`;
+    return fixture(html`<markdown-editor markdown="${md}" debug>
+        <div class="output" slot="markdown-html"></div>
+      </markdown-editor>`);
+  }
+
   describe('Element initialization', () => {
     let element = /** @type MarkdownEditorElement */ (null);
     beforeEach(async () => {
@@ -75,6 +85,13 @@ https://domain.com
     it('sets the contextToolbar when contextToolbarEnabled', () => {
       element.contextToolbarEnabled = true;
       assert.ok(element.contextToolbar);
+    });
+
+    it('sets the contextToolbar only once', () => {
+      element.contextToolbarEnabled = true;
+      const spy = sinon.spy(element, 'requestUpdate');
+      element.contextToolbarEnabled = true;
+      assert.isFalse(spy.called);
     });
 
     it('does not render the actions toolbar', () => {
@@ -132,6 +149,32 @@ https://domain.com
     it('generates the markdown', () => {
       const result = element.toMarkdown();
       assert.equal(result, '# Test\n\n');
+    });
+  });
+
+  describe('#debug', () => {
+    let element = /** @type MarkdownEditorElement */ (null);
+    beforeEach(async () => {
+      element = await debugFixture();
+    });
+
+    it('sets the debug flag on the editor', () => {
+      assert.isTrue(element.editor.debug);
+    });
+
+    it('has the debug attribute', () => {
+      assert.isTrue(element.hasAttribute('debug'));
+    });
+
+    it('turns the debug off', () => {
+      element.debug = false;
+      assert.isFalse(element.editor.debug);
+    });
+
+    it('changes the debug only once', () => {
+      const spy = sinon.spy(element, 'requestUpdate');
+      element.debug = true;
+      assert.isFalse(spy.called);
     });
   });
 

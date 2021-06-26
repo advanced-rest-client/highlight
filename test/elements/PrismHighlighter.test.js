@@ -1,5 +1,5 @@
 import { assert } from '@open-wc/testing';
-import { PrismHighlighter } from '../src/PrismHighlighter.js';
+import { PrismHighlighter } from '../../src/PrismHighlighter.js';
 
 /* global Prism */
 

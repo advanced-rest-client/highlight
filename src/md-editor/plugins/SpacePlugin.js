@@ -60,7 +60,7 @@ export default class SpacePlugin extends EditorPlugin {
       editor.selectCollapsed(li);
       return true;
     }
-    if (['#', '##', '###', '####', '######', '######'].includes(preContent)) {
+    if (['#', '##', '###', '####', '#####', '######'].includes(preContent)) {
       logger.debug('Creating a header', `H${preContent.length}`);
       const typedElement = /** @type HTMLElement */ (startContainer);
       const header = editor.addHeadline(preContent.length, typedElement);

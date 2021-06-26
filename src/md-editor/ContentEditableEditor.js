@@ -141,8 +141,7 @@ export class ContentEditableEditor {
    */
   selectContent(node) {
     const range = new Range();
-    range.setStart(node, 0);
-    range.setEndBefore(node);
+    range.selectNodeContents(node);
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
@@ -181,14 +180,26 @@ export class ContentEditableEditor {
     const { startContainer, startOffset } = range;
     const { textContent } = startContainer;
     const preContent = textContent.substr(0, startOffset).trim();
-    const lang = preContent.replace('```', '').trim();
-
+    let lang = preContent.replace('```', '').trim();
+    if (!lang && startContainer.nextSibling && startContainer.nextSibling.nodeType === Node.TEXT_NODE) {
+      const txt = /** @type Text */ (startContainer.nextSibling);
+      const contents = txt.textContent.trim();
+      if (contents) {
+        lang = contents;
+      }
+    }
     const pre = document.createElement(`pre`);
     const code = document.createElement(`code`);
     code.classList.add(`language-${lang || 'none'}`);
     pre.appendChild(code);
     code.textContent = ' ';
-    this.replaceNode(this.findParentBlockElement(startContainer), pre);
+    const parent = this.findParentBlockElement(startContainer);
+    if (parent.contentEditable === 'true') {
+      parent.insertBefore(pre, startContainer);
+      parent.removeChild(startContainer);
+    } else {
+      this.replaceNode(parent, pre);
+    }
     this.selectContent(code.firstChild);
   }
 
@@ -272,20 +283,25 @@ export class ContentEditableEditor {
    * @returns {HTMLElement} The created paragraph.
    */
   addHeadline(weight, refNode, after=false) {
-    const p = document.createElement(`h${weight}`);
-    p.innerHTML = '<br/>';
+    const title = document.createElement(`h${weight}`);
+    title.innerHTML = '<br/>';
     const node = this.findParentNonTextElement(refNode); // parentElement;
+    if (node.contentEditable === 'true') {
+      // simply replace the text node that has been direct child of the content editable.
+      node.insertBefore(title, refNode);
+      return title;
+    }
     const parent = node.parentNode;
     if (after) {
       if (parent.lastElementChild === node) {
-        parent.appendChild(p);
+        parent.appendChild(title);
       } else {
-        parent.insertBefore(p, node.nextElementSibling);
+        parent.insertBefore(title, node.nextElementSibling);
       }
     } else {
-      parent.insertBefore(p, node);
+      parent.insertBefore(title, node);
     }
-    return p;
+    return title;
   }
 
   /**
