@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { nextFrame, fixture, expect, assert, aTimeout, html } from '@open-wc/testing';
 import sinon from 'sinon';
-import '../arc-marked.js';
+import '../../arc-marked.js';
 import {
   markdownValue,
   breaksValue,
@@ -10,9 +10,9 @@ import {
   sanitizeValue,
   sanitizerValue,
   smartypants,
-} from '../src/ArcMarkedElement.js';
+} from '../../src/ArcMarkedElement.js';
 
-/** @typedef {import('../').ArcMarkedElement} ArcMarkedElement */
+/** @typedef {import('../..').ArcMarkedElement} ArcMarkedElement */
 
 describe('ArcMarkedElement', () => {
   /**
@@ -129,7 +129,7 @@ describe('ArcMarkedElement', () => {
   async function remoteContentFixture() {
     return fixture(html`<arc-marked>
         <div id="output" slot="markdown-html"></div>
-        <script type="text/markdown" src="test/test.md">
+        <script type="text/markdown" src="test/elements/test.md">
           # Loading
           Please wait...
         </script>
@@ -141,7 +141,7 @@ describe('ArcMarkedElement', () => {
   async function badRemoteContentFixture() {
     return fixture(html`<arc-marked>
         <div id="output" slot="markdown-html"></div>
-        <script type="text/markdown" src="test/test3.md"></script>
+        <script type="text/markdown" src="test/elements/test3.md"></script>
       </arc-marked>`);
   }
   /**
@@ -150,7 +150,7 @@ describe('ArcMarkedElement', () => {
   async function sanitizedRemoteContentFixture() {
     return fixture(html`<arc-marked>
         <div id="output" slot="markdown-html"></div>
-        <script type="text/markdown" src="test/remoteSanitization.md"></script>
+        <script type="text/markdown" src="test/elements/remoteSanitization.md"></script>
       </arc-marked>`);
   }
    
@@ -160,7 +160,7 @@ describe('ArcMarkedElement', () => {
   async function unsanitizedRemoteContentFixture() {
     return fixture(html`<arc-marked disableRemoteSanitization>
         <div id="output" slot="markdown-html"></div>
-        <script type="text/markdown" src="test/remoteSanitization.md"></script>
+        <script type="text/markdown" src="test/elements/remoteSanitization.md"></script>
       </arc-marked>`);
   }
 
@@ -170,7 +170,7 @@ describe('ArcMarkedElement', () => {
   async function markedOptionsFixture() {
     return fixture(html`<arc-marked sanitize pedantic breaks smartypants>
         <div id="output" slot="markdown-html"></div>
-        <script type="text/markdown" src="test/remoteSanitization.md"></script>
+        <script type="text/markdown" src="test/elements/remoteSanitization.md"></script>
       </arc-marked>`);
   }
 
@@ -471,7 +471,7 @@ describe('ArcMarkedElement', () => {
           markedElement.removeEventListener('markedloaded', firstCheck);
           proofElement.innerHTML = '<h1 id="test-2">Test 2</h1>\n';
           // @ts-ignore
-          markedElement.querySelector('[type="text/markdown"]').src = 'test/test2.md';
+          markedElement.querySelector('[type="text/markdown"]').src = 'test/elements/test2.md';
           markedElement.addEventListener('markedloaded', () => {
             expect(outputElement.innerHTML).to.equal(proofElement.innerHTML);
             done();
