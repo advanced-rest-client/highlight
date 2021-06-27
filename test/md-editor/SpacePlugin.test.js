@@ -123,7 +123,7 @@ describe('SpacePlugin', () => {
       const headerName = `H${level}`;
 
       beforeEach(async () => {
-        element = await containerFixture(html`${new Array(level).fill('#').join('')}`);
+        element = await containerFixture(html`<p>${new Array(level).fill('#').join('')}</p>`);
         editor = new MarkdownEditor(element);
         editor.registerPlugin(new SpacePlugin());
         editor.listen();
@@ -158,6 +158,20 @@ describe('SpacePlugin', () => {
         });
         const range = editor.editor.getRange();
         assert.equal(range.startContainer.nodeName, headerName);
+      });
+
+      it('inserts the header as a direct child', async () => {
+        editor.unlisten();
+        element = await containerFixture(html`${new Array(level).fill('#').join('')}`);
+        editor = new MarkdownEditor(element);
+        editor.registerPlugin(new SpacePlugin());
+        editor.listen();
+        editor.editor.focusFirstAvailable(element);
+        await sendKeys({
+          press: 'Space',
+        });
+        
+        assert.ok(element.querySelector(headerName));
       });
     });
   });

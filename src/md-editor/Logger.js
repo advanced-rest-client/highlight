@@ -29,6 +29,9 @@ export default class Logger {
   }
 
   clear() {
+    if (!this.enabled) {
+      return;
+    }
     console.clear();
   }
 

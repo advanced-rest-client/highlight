@@ -41,7 +41,7 @@ export default class DeletePlugin extends EditorPlugin {
       // removing the whole thing
       if (startOffset === 0 && startContainer.textContent.length === endOffset) {
         logger.debug('Removing a node.', startContainer);
-        startContainer.parentElement.removeChild(startContainer);
+        startContainer.parentNode.removeChild(startContainer);
         return true;
       }
     }

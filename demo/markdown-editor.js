@@ -168,7 +168,7 @@ _You **can** combine them_
     const element = document.querySelector('markdown-editor');
     const { editor } = element.editor;
     // editor.focusFirstAvailable(document.getElementById('content'));
-    // editor.selectNodeContent(document.getElementById('content').querySelector('h1'));
+    // editor.selectContent(document.getElementById('content').querySelector('h1'));
     editor.nextLine();
   }
 

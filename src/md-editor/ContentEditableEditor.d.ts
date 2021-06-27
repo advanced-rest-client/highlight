@@ -36,28 +36,23 @@ export class ContentEditableEditor {
   findFirstText(element: Element): Text|null;
 
   /**
-   * Selects the contents of a node.
-   */
-  selectNodeContent(element: Node): void;
-
-  /**
    * Sets caret position at the beginning of the node.
    */
   selectCollapsed(node: Node): void;
 
   /**
-   * Selects a content in the node and sets the position at the end of the selection.
+   * Selects the contents of a node.
    */
   selectContent(node: Node): void;
 
-  /**
-   * Replaces a content in a text node.
-   * @param element The text node to replace a content in.
-   * @param before The text to put before the replacement.
-   * @param content The content to put after the text node
-   * @param after The text node to put after the `content`.
-   */
-  replaceTextNodeContent(element: Text, before: string, content: Element, after?: string): void;
+  // /**
+  //  * Replaces a content in a text node.
+  //  * @param element The text node to replace a content in.
+  //  * @param before The text to put before the replacement.
+  //  * @param content The content to put after the text node
+  //  * @param after The text node to put after the `content`.
+  //  */
+  // replaceTextNodeContent(element: Text, before: string, content: Element, after?: string): void;
 
   /**
    * Replaces current line with a code block.
@@ -95,17 +90,17 @@ export class ContentEditableEditor {
    */
   addHeadline(weight: number, refNode: Element, after?: boolean): HTMLElement;
 
-  /**
-   * Removes a list item from a list
-   * @param item
-   * @returns Created element
-   */
-  removeListItem(item: HTMLElement): HTMLElement;
+  // /**
+  //  * Removes a list item from a list
+  //  * @param item
+  //  * @returns Created element
+  //  */
+  // removeListItem(item: HTMLElement): HTMLElement;
 
-  /**
-   * Appends a new list item to a list
-   * @param previousListItem
-   * @returns Created list item
-   */
-  appendListItem(previousListItem: HTMLElement): HTMLElement|null;
+  // /**
+  //  * Appends a new list item to a list
+  //  * @param previousListItem
+  //  * @returns Created list item
+  //  */
+  // appendListItem(previousListItem: HTMLElement): HTMLElement|null;
 }

@@ -54,11 +54,21 @@ export default class EnterPlugin extends EditorPlugin {
       }
     }
     const blockParent = editor.findParentNonTextElement(startContainer);
-    if (!blockParent) {
-      return false;
-    }
     if (blockParent.localName === 'pre') {
       if (shiftKey) {
+        // Chrome and Safari copies the current node to the new line.
+        // This may be a text block processed by Prism library with generated
+        // syntax highlighting. We don't want that and therefore we focus on the code itself.
+        // const el = this.elementBeforeCode(startContainer);
+        // console.log(el, el.nextSibling);
+        // if (el && el.nextSibling && el.nextSibling.nodeType === Node.TEXT_NODE && el.nextSibling.nodeValue.trim()) {
+        //   // insert a text node in between and focus there.
+        //   const txt = new Text();
+        //   el.parentNode.insertBefore(txt, el.nextSibling);
+        //   editor.focusNode(txt);
+        // } else {
+        //   editor.focusNode(blockParent);
+        // }
         return false;
       }
       const node = editor.insertNewLine(blockParent, true);
@@ -68,6 +78,27 @@ export default class EnterPlugin extends EditorPlugin {
     }
     return false;
   }
+
+  // /**
+  //  * Finds a parent element that is a direct child of the `<code>` element.
+  //  * @param {Node} node
+  //  * @returns {Node}
+  //  */
+  // elementBeforeCode(node) {
+  //   let last = null;
+  //   let current = node;
+  //   // eslint-disable-next-line no-constant-condition
+  //   while (true) {
+  //     if (!current) {
+  //       return null;
+  //     }
+  //     if (current.nodeName === 'CODE') {
+  //       return last;
+  //     }
+  //     last = current;
+  //     current = current.parentNode;
+  //   }
+  // }
 
   destroy() {}
 }

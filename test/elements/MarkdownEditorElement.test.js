@@ -194,7 +194,7 @@ https://domain.com
         },
       });
       const p = output.querySelector('p');
-      contentEditor.selectNodeContent(p.firstChild);
+      contentEditor.selectContent(p.firstChild);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="bold"]',
@@ -210,7 +210,7 @@ https://domain.com
         },
       });
       const p = output.querySelector('p');
-      contentEditor.selectNodeContent(p.firstChild);
+      contentEditor.selectContent(p.firstChild);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="italic"]',
@@ -226,7 +226,7 @@ https://domain.com
         },
       });
       const p = output.querySelector('p');
-      contentEditor.selectNodeContent(p.firstChild);
+      contentEditor.selectContent(p.firstChild);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="underline"]',
@@ -242,7 +242,7 @@ https://domain.com
         },
       });
       const p = output.querySelector('p');
-      contentEditor.selectNodeContent(p.firstChild);
+      contentEditor.selectContent(p.firstChild);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="strikeThrough"]',
@@ -258,7 +258,7 @@ https://domain.com
         },
       });
       const ps = output.querySelectorAll('p');
-      contentEditor.selectNodeContent(ps[1]);
+      contentEditor.selectContent(ps[1]);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="removeFormat"]',
@@ -276,7 +276,7 @@ https://domain.com
         },
       });
       const items = output.querySelectorAll('ul li');
-      contentEditor.selectNodeContent(items[1]);
+      contentEditor.selectContent(items[1]);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="indent"]',
@@ -294,7 +294,7 @@ https://domain.com
         },
       });
       const items = output.querySelectorAll('ol li');
-      contentEditor.selectNodeContent(items[1]);
+      contentEditor.selectContent(items[1]);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="outdent"]',
@@ -310,7 +310,7 @@ https://domain.com
         },
       });
       const p = output.querySelector('p');
-      contentEditor.selectNodeContent(p.firstChild);
+      contentEditor.selectContent(p.firstChild);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="formatblock"][data-arg="blockquote"]',
@@ -339,7 +339,7 @@ https://domain.com
         },
       });
       const p = output.querySelector('p');
-      contentEditor.selectNodeContent(p.firstChild);
+      contentEditor.selectContent(p.firstChild);
       await inputText('https');
       await sendKeys({ down: 'Shift' });
       await sendKeys({ press: `Semicolon` });
@@ -351,7 +351,7 @@ https://domain.com
       await inputText('com');
       await sendKeys({ press: `Slash` });
       await inputText('api');
-      contentEditor.selectNodeContent(p.firstChild);
+      contentEditor.selectContent(p.firstChild);
       await executeServerCommand('mouse', {
         click: {
           selector: '[data-cmd="createLink"]',
@@ -368,7 +368,7 @@ https://domain.com
         },
       });
       const p = output.querySelector('p');
-      contentEditor.selectNodeContent(p.firstChild);
+      contentEditor.selectContent(p.firstChild);
       await inputText('https');
       await sendKeys({ down: 'Shift' });
       await sendKeys({ press: `Semicolon` });

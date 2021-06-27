@@ -1,9 +1,16 @@
+/**
+ * A helper class to manipulate the content of a contentEditable.
+ */
 export class ContentEditableEditor {
   /**
-   * @return {Range} The current range from the current selection.
+   * @return {Range|null} The current range from the current selection.
    */
   getRange() {
-    return window.getSelection().getRangeAt(0);
+    const selection = window.getSelection();
+    if (!selection.rangeCount) {
+      return null;
+    }
+    return selection.getRangeAt(0);
   }
 
   /**
@@ -15,6 +22,8 @@ export class ContentEditableEditor {
     content.focus();
     const node = this.findFirstText(content);
     if (!node) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
       return;
     }
     this.focusNode(node, align);
@@ -27,10 +36,13 @@ export class ContentEditableEditor {
    */
   focusNode(node, align='end') {
     const range = new Range();
+    // this matches the behavior with Safari.
+    const txt = this.findFirstText(/** @type Element */ (node));
+    const selectable = txt || node;
     if (align === 'start') {
-      range.setStart(node, 0);
+      range.setStart(selectable, 0);
     } else {
-      range.selectNodeContents(node);
+      range.selectNodeContents(selectable);
     }
     range.collapse();
     const selection = window.getSelection();
@@ -65,19 +77,6 @@ export class ContentEditableEditor {
   }
 
   /**
-   * Selects the contents of a node.
-   * @param {Node} element
-   */
-  selectNodeContent(element) {
-    const range = new Range();
-    range.setStart(element, 0);
-    range.selectNodeContents(element);
-    const selection = window.getSelection();
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-
-  /**
    * When possible it moves the caret to the next line relative to the current selection.
    * @param {'end'|'start'=} align Where to align the caret.
    */
@@ -94,7 +93,9 @@ export class ContentEditableEditor {
     if (!block.nextElementSibling) {
       return;
     }
-    this.focusNode(block.nextElementSibling, align);
+    const txt = this.findFirstText(block.nextElementSibling);
+    const node = txt || block.nextElementSibling;
+    this.focusNode(node, align);
   }
 
   /**
@@ -114,7 +115,9 @@ export class ContentEditableEditor {
     if (!block.previousElementSibling) {
       return;
     }
-    this.focusNode(block.previousElementSibling, align);
+    const txt = this.findFirstText(block.previousElementSibling);
+    const node = txt || block.previousElementSibling;
+    this.focusNode(node, align);
   }
 
   /**
@@ -122,12 +125,17 @@ export class ContentEditableEditor {
    * @param {Node} node
    */
   selectCollapsed(node) {
+    if (![Node.TEXT_NODE, Node.ELEMENT_NODE].includes(node.nodeType)) {
+      return;
+    }
     const range = new Range();
     if (node.nodeType === Node.TEXT_NODE) {
-      range.setStart(node, 1);
-    } else {
-      // range.selectNode(node);
       range.setStart(node, 0);
+    } else {
+      // this matches the behaviour with Safari that selects the text node.
+      const txt = this.findFirstText(/** @type Element */ (node));
+      const selectable = txt || node;
+      range.setStart(selectable, 0);
     }
     range.collapse();
     const selection = window.getSelection();
@@ -136,7 +144,7 @@ export class ContentEditableEditor {
   }
 
   /**
-   * Selects a content in the node and sets the position at the end of the selection.
+   * Selects the contents of a node.
    * @param {Node} node
    */
   selectContent(node) {
@@ -147,29 +155,29 @@ export class ContentEditableEditor {
     selection.addRange(range);
   }
 
-  /**
-   * Replaces a content in a text node.
-   * @param {Text} element The text node to replace a content in.
-   * @param {string} before The text to put before the replacement.
-   * @param {Element} content The content to put after the text node
-   * @param {string=} after The text node to put after the `content`.
-   */
-  replaceTextNodeContent(element, before, content, after='&nbsp;') {
-    const node = element;
-    node.textContent = before;
-    if (node.nextElementSibling) {
-      node.nextElementSibling.insertAdjacentElement('beforebegin', content);
-      content.insertAdjacentText('afterend', after);
-    } else {
-      const parent = node.parentElement;
-      parent.appendChild(content);
-      if (after) {
-        parent.appendChild(new Text(after));
-      } else {
-        parent.insertAdjacentHTML('beforeend', '&nbsp;');
-      }
-    }
-  }
+  // /**
+  //  * Replaces a content in a text node.
+  //  * @param {Text} element The text node to replace a content in.
+  //  * @param {string} before The text to put before the replacement.
+  //  * @param {Element} content The content to put after the text node
+  //  * @param {string=} after The text node to put after the `content`.
+  //  */
+  // replaceTextNodeContent(element, before, content, after='&nbsp;') {
+  //   const node = element;
+  //   node.textContent = before;
+  //   if (node.nextElementSibling) {
+  //     node.nextElementSibling.insertAdjacentElement('beforebegin', content);
+  //     content.insertAdjacentText('afterend', after);
+  //   } else {
+  //     const parent = node.parentElement;
+  //     parent.appendChild(content);
+  //     if (after) {
+  //       parent.appendChild(new Text(after));
+  //     } else {
+  //       parent.insertAdjacentHTML('beforeend', '&nbsp;');
+  //     }
+  //   }
+  // }
 
   /**
    * Replaces current line with a code block.
@@ -243,12 +251,15 @@ export class ContentEditableEditor {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const typedElement = /** @type HTMLElement */ (target);
-      if (target.nodeType === Node.ELEMENT_NODE && !['span', 'code'].includes(typedElement.localName)) {
+      if (target.nodeType === Node.ELEMENT_NODE && !['span', 'code', 'font', 'b', 'i', 'u', 'em', 'del', 'sup', 'sub'].includes(typedElement.localName)) {
         return typedElement;
       }
       const parent = target.parentElement;
       if (!parent) {
         return null;
+      }
+      if (parent.getAttribute('contentEditable') === 'true') {
+        return parent;
       }
       target = parent;
     }
@@ -304,48 +315,48 @@ export class ContentEditableEditor {
     return title;
   }
 
-  /**
-   * Removes a list item from a list
-   * @param {HTMLElement} item
-   * @returns {HTMLElement} Created element
-   */
-  removeListItem(item) {
-    const parentList = item.parentElement;
-    parentList.removeChild(item);
-    let parentItem;
-    if (parentList.parentElement && parentList.parentElement.localName === 'li') {
-      parentItem = parentList.parentElement;
-    }
-    let focusNode;
-    if (!parentList.children.length) {
-      focusNode = this.insertNewLine(parentList, true);
-      // remove empty list.
-      parentList.parentNode.removeChild(parentList);
-    }
-    if (parentItem) {
-      focusNode = this.appendListItem(parentItem);
-    } else if (!focusNode) {
-      focusNode = this.insertNewLine(parentList, true);
-    }
-    return focusNode;
-  }
+  // /**
+  //  * Removes a list item from a list
+  //  * @param {HTMLElement} item
+  //  * @returns {HTMLElement} Created element
+  //  */
+  // removeListItem(item) {
+  //   const parentList = item.parentElement;
+  //   parentList.removeChild(item);
+  //   let parentItem;
+  //   if (parentList.parentElement && parentList.parentElement.localName === 'li') {
+  //     parentItem = parentList.parentElement;
+  //   }
+  //   let focusNode;
+  //   if (!parentList.children.length) {
+  //     focusNode = this.insertNewLine(parentList, true);
+  //     // remove empty list.
+  //     parentList.parentNode.removeChild(parentList);
+  //   }
+  //   if (parentItem) {
+  //     focusNode = this.appendListItem(parentItem);
+  //   } else if (!focusNode) {
+  //     focusNode = this.insertNewLine(parentList, true);
+  //   }
+  //   return focusNode;
+  // }
 
-  /**
-   * Appends a new list item to a list
-   * @param {HTMLElement} previousListItem
-   * @returns {HTMLElement|null} Created list item
-   */
-  appendListItem(previousListItem) {
-    const list = previousListItem.parentElement;
-    if (!['ul','ol'].includes(list.localName)) {
-      return null;
-    }
-    const item = document.createElement(previousListItem.localName);
-    if (list.lastElementChild === previousListItem) {
-      list.appendChild(item);
-    } else {
-      list.insertBefore(item, previousListItem.nextElementSibling);
-    }
-    return /** @type HTMLLIElement */ (item);
-  }
+  // /**
+  //  * Appends a new list item to a list
+  //  * @param {HTMLElement} previousListItem
+  //  * @returns {HTMLElement|null} Created list item
+  //  */
+  // appendListItem(previousListItem) {
+  //   const list = previousListItem.parentElement;
+  //   if (!['ul','ol'].includes(list.localName)) {
+  //     return null;
+  //   }
+  //   const item = document.createElement(previousListItem.localName);
+  //   if (list.lastElementChild === previousListItem) {
+  //     list.appendChild(item);
+  //   } else {
+  //     list.insertBefore(item, previousListItem.nextElementSibling);
+  //   }
+  //   return /** @type HTMLLIElement */ (item);
+  // }
 }
