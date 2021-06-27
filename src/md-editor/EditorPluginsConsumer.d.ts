@@ -64,7 +64,9 @@ export class EditorPluginsConsumer {
    * 
    * @param action
    * @param container A reference to the editor's outer-most container.
+   * @param editor
+   * @param document A reference to the document object used for selection manipulation.
    * @param args The list of arguments passed to the plugin. Schema depends on the action.
    */
-  executeAction(action: string, container: HTMLElement, editor: ContentEditableEditor, args?: any): void;
+  executeAction(action: string, container: HTMLElement, editor: ContentEditableEditor, document: DocumentOrShadowRoot, args?: any): void;
 }

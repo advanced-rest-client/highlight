@@ -22,8 +22,28 @@ export const createLinkAction = Symbol('createLinkAction');
 export const toolbarValue = Symbol('toolbarValue');
 export const registerPlugins = Symbol('registerPlugins');
 export const contextToolbarEnabledValue = Symbol('contextToolbarEnabledValue');
+export const documentValue = Symbol('documentValue');
 
 export default class MarkdownEditorElement extends ArcMarkedElement {
+  /**
+   * @returns {DocumentOrShadowRoot} A reference to the document object used for selection manipulation.
+   */
+  get document() {
+    return this[documentValue] || this.ownerDocument;
+  }
+
+  /**
+   * @param {DocumentOrShadowRoot} value A reference to the document object used for selection manipulation.
+   */
+  set document(value) {
+    const old = this[documentValue];
+    if (old === value) {
+      return;
+    }
+    this[documentValue] = value;
+    this[editorValue].document = this.document;
+  }
+
   /**
    * Registers a context selection toolbar plugin
    * @param {EditorPlugin} value
@@ -117,7 +137,7 @@ export default class MarkdownEditorElement extends ArcMarkedElement {
 
   constructor() {
     super();
-    this[editorValue] = new MarkdownEditor(this);
+    this[editorValue] = new MarkdownEditor(this, this.document);
     // this[editorValue].debug = true;
     /** @type {boolean} */
     this.toolbar = undefined;
@@ -201,7 +221,7 @@ export default class MarkdownEditorElement extends ArcMarkedElement {
    * Handles the create link action from the toolbar.
    */
   [createLinkAction]() {
-    const range = window.getSelection().getRangeAt(0);
+    const range = this.document.getSelection().getRangeAt(0);
     const { startContainer, endContainer, startOffset, endOffset, collapsed } = range;
     if (collapsed) {
       // todo: render UI to ask for the link

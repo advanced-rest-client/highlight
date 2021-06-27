@@ -15,6 +15,10 @@ export const toolbarValue: unique symbol;
 export const registerPlugins: unique symbol;
 
 export default class MarkdownEditorElement extends ArcMarkedElement {
+  /**
+   * A reference to the document object used for selection manipulation.
+   */
+  document: DocumentOrShadowRoot;
   [toolbarValue]: EditorPlugin;
   /**
    * Registers a context selection toolbar plugin

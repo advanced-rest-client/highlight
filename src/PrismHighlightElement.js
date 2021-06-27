@@ -49,7 +49,7 @@ export const highlightHandler = Symbol('highlightHandler');
  * old and new code due to the asynchronous nature of the code highlighter.
  */
 export default class PrismHighlightElement extends LitElement {
-   get styles() {
+  get styles() {
     return [ prismStyles, elementStyles ];
   }
 

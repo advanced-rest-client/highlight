@@ -3,7 +3,7 @@ import { executeServerCommand } from '@web/test-runner-commands';
 import sinon from 'sinon';
 import { MarkdownEditor } from '../../src/md-editor/MarkdownEditor.js';
 
-describe('MarkdownEditorElement', () => {
+describe('MarkdownEditor', () => {
   /**
    * @returns {Promise<HTMLElement>}
    */
@@ -30,12 +30,12 @@ describe('MarkdownEditorElement', () => {
     });
 
     it('sets the #root', () => {
-      const editor = new MarkdownEditor(element);
+      const editor = new MarkdownEditor(element, document);
       assert.isTrue(editor.root === element);
     });
 
     it('sets the #editor', () => {
-      const editor = new MarkdownEditor(element);
+      const editor = new MarkdownEditor(element, document);
       assert.ok(editor.editor, 'has the editor');
       assert.equal(editor.editor.constructor.name, 'ContentEditableEditor');
     });
@@ -47,7 +47,7 @@ describe('MarkdownEditorElement', () => {
       let element = /** @type HTMLElement */ (null);
       beforeEach(async () => {
         element = await containerFixture();
-        editor = new MarkdownEditor(element);
+        editor = new MarkdownEditor(element, document);
         editor.listen();
       });
 
@@ -73,10 +73,11 @@ describe('MarkdownEditorElement', () => {
           element.dispatchEvent(e);
           // 2 because each time the `keydown` action is also called
           assert.strictEqual(spy.callCount, 2, 'the action is called');
-          const [reportedCode, reportedRoot, reportedEditor, reportedArgs] = spy.args[1];
+          const [reportedCode, reportedRoot, reportedEditor, reportedDocument, reportedArgs] = spy.args[1];
           assert.equal(reportedCode, code, 'The plugin name is reported');
           assert.equal(reportedRoot, element, 'The root is reported');
           assert.equal(reportedEditor, editor.editor, 'The editor is reported');
+          assert.equal(reportedDocument, editor.document, 'The editor is reported');
           assert.equal(reportedArgs, e, 'The args is reported');
         });
       });
@@ -92,10 +93,11 @@ describe('MarkdownEditorElement', () => {
         element.dispatchEvent(e);
         // 2 because each time the `keydown` action is also called
         assert.strictEqual(spy.callCount, 2, 'the action is called');
-        const [reportedCode, reportedRoot, reportedEditor, reportedArgs] = spy.args[1];
+        const [reportedCode, reportedRoot, reportedEditor, reportedDocument, reportedArgs] = spy.args[1];
         assert.equal(reportedCode, 'Enter', 'The plugin name is reported');
         assert.equal(reportedRoot, element, 'The root is reported');
         assert.equal(reportedEditor, editor.editor, 'The editor is reported');
+        assert.equal(reportedDocument, editor.document, 'The editor is reported');
         assert.equal(reportedArgs, e, 'The args is reported');
       });
 
@@ -109,10 +111,11 @@ describe('MarkdownEditorElement', () => {
         });
         element.dispatchEvent(e);
         assert.strictEqual(spy.callCount, 1, 'the action is called');
-        const [reportedCode, reportedRoot, reportedEditor, reportedArgs] = spy.args[0];
+        const [reportedCode, reportedRoot, reportedEditor, reportedDocument, reportedArgs] = spy.args[0];
         assert.equal(reportedCode, 'keydown', 'The plugin name is reported');
         assert.equal(reportedRoot, element, 'The root is reported');
         assert.equal(reportedEditor, editor.editor, 'The editor is reported');
+        assert.equal(reportedDocument, editor.document, 'The editor is reported');
         assert.equal(reportedArgs, e, 'The args is reported');
       });
     });
@@ -123,7 +126,7 @@ describe('MarkdownEditorElement', () => {
       beforeEach(async () => {
         const doc = await documentFixture();
         element = doc.querySelector('div');
-        editor = new MarkdownEditor(element);
+        editor = new MarkdownEditor(element, document);
         editor.listen();
       });
 
@@ -139,10 +142,11 @@ describe('MarkdownEditorElement', () => {
           },
         });
         assert.strictEqual(spy.callCount, 1, 'the action is called');
-        const [reportedAction, reportedRoot, reportedEditor, reportedArgs] = spy.args[0];
+        const [reportedAction, reportedRoot, reportedEditor, reportedDocument, reportedArgs] = spy.args[0];
         assert.equal(reportedAction, 'selection', 'The plugin name is reported');
         assert.equal(reportedRoot, element, 'The root is reported');
         assert.equal(reportedEditor, editor.editor, 'The editor is reported');
+        assert.equal(reportedDocument, editor.document, 'The document is reported');
         assert.isUndefined(reportedArgs, 'The args is not reported');
       });
 
@@ -154,10 +158,11 @@ describe('MarkdownEditorElement', () => {
           },
         });
         assert.isTrue(spy.called, 'the action is called');
-        const [reportedAction, reportedRoot, reportedEditor, reportedArgs] = spy.args[0];
+        const [reportedAction, reportedRoot, reportedEditor, reportedDocument, reportedArgs] = spy.args[0];
         assert.equal(reportedAction, 'selection', 'The plugin name is reported');
         assert.equal(reportedRoot, element, 'The root is reported');
         assert.equal(reportedEditor, editor.editor, 'The editor is reported');
+        assert.equal(reportedDocument, editor.document, 'The document is reported');
         assert.isUndefined(reportedArgs, 'The args is not reported');
       });
 

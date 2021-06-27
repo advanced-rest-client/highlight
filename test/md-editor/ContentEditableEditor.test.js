@@ -48,7 +48,7 @@ describe('ContentEditableEditor', () => {
     });
 
     it('returns null when no selection', () => {
-      const selection = window.getSelection();
+      const selection = editor.document.getSelection();
       selection.removeAllRanges();
       const range = editor.getRange();
       assert.equal(range, null);

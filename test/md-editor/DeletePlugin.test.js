@@ -19,7 +19,7 @@ describe('DeletePlugin', () => {
 
     beforeEach(async () => {
       element = await paragraphFixture();
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new DeletePlugin());
       editor.listen();
     });
@@ -44,7 +44,7 @@ describe('DeletePlugin', () => {
       const range = new Range();
       range.selectNodeContents(p.firstChild);
       range.setStart(p.firstChild, 2);
-      const selection = window.getSelection();
+      const selection = editor.document.getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
       await sendKeys({

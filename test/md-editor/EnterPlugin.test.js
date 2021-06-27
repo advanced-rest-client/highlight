@@ -36,7 +36,7 @@ describe('EnterPlugin', () => {
      */
     async function setupEditor(content) {
       element = await containerFixture(content);
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new EnterPlugin());
       editor.listen();
     }
@@ -128,7 +128,7 @@ describe('EnterPlugin', () => {
 
     beforeEach(async () => {
       element = await preContentFixture();
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new EnterPlugin());
       editor.listen();
     });
@@ -169,7 +169,7 @@ describe('EnterPlugin', () => {
      */
     async function setupEditor(content) {
       element = await containerFixture(content);
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new EnterPlugin());
       editor.listen();
     }

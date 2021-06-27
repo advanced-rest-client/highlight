@@ -19,7 +19,7 @@ describe('BackquotePlugin', () => {
 
     beforeEach(async () => {
       element = await paragraphFixture();
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new BackquotePlugin());
       editor.listen();
     });

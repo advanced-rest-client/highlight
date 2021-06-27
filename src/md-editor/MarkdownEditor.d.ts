@@ -5,13 +5,17 @@ export const keydownHandler: unique symbol;
 export const selectionChangeHandler: unique symbol;
 
 export class MarkdownEditor extends EditorPluginsConsumer {
+  /**
+   * A reference to the document object used for selection manipulation.
+   */
+  document: DocumentOrShadowRoot;
   root: HTMLElement;
   editor: ContentEditableEditor;
   /**
    * @param root The top most container of the editor, 
    * usually the one that is marked as `contentEditable`.
    */
-  constructor(root: HTMLElement);
+  constructor(root: HTMLElement, documentRef: DocumentOrShadowRoot);
 
   /**
    * Initializes the events required for the editor to work.

@@ -115,11 +115,12 @@ export class EditorPluginsConsumer {
    * Runs plugins registered for the action.
    * 
    * @param {string} action
-   * @param {ContentEditableEditor} editor
    * @param {HTMLElement} container A reference to the editor's outer-most container.
+   * @param {ContentEditableEditor} editor
+   * @param {DocumentOrShadowRoot} document A reference to the document object used for selection manipulation.
    * @param {any=} args The list of arguments passed to the plugin. Schema depends on the action.
    */
-  executeAction(action, container, editor, args) {
+  executeAction(action, container, editor, document, args) {
     if (this[pluginsValue].has(action)) {
       const plugins = this[pluginsValue].get(action);
       const params = /** @type PluginExecuteOptions */ ({
@@ -127,6 +128,7 @@ export class EditorPluginsConsumer {
         container,
         editor,
         logger: this.logger,
+        document,
       });
       plugins.forEach((instance) => {
         try {

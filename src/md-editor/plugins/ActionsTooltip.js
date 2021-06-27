@@ -35,6 +35,8 @@ export class ActionsTooltip extends EditorPlugin {
     this.createTimeout = 200;
     this.stylesApplied = false;
     this.hidden = true;
+    /** @type DocumentOrShadowRoot */
+    this.currentDocument = undefined;
     /** 
      * @type {HTMLElement}
      */
@@ -48,9 +50,10 @@ export class ActionsTooltip extends EditorPlugin {
    * @param {PluginExecuteOptions} params The execution parameters
    * @returns {void}
    */
-  execute({container}) {
+  execute({container, document}) {
+    this.currentDocument = document;
     this[setContainer](container);
-    const selection = document.getSelection();
+    const selection = this.currentDocument.getSelection();
     if (selection.rangeCount === 0) {
       return;
     }
@@ -124,7 +127,7 @@ export class ActionsTooltip extends EditorPlugin {
     if (!container || this.hidden) {
       return;
     }
-    const selection = document.getSelection();
+    const selection = this.currentDocument.getSelection();
     if (selection.rangeCount === 0 || !container) {
       return;
     }
@@ -232,7 +235,7 @@ export class ActionsTooltip extends EditorPlugin {
     if (this[tooltipValue]) {
       return;
     }
-    const selection = document.getSelection();
+    const selection = this.currentDocument.getSelection();
     if (selection.rangeCount === 0) {
       return;
     }

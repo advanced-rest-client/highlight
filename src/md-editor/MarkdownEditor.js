@@ -3,13 +3,34 @@ import { ContentEditableEditor } from "./ContentEditableEditor.js";
 
 export const keydownHandler = Symbol('keydownHandler');
 export const selectionChangeHandler = Symbol('selectionChangeHandler');
+export const documentValue = Symbol('documentValue');
 
 export class MarkdownEditor extends EditorPluginsConsumer {
   /**
+   * @returns {DocumentOrShadowRoot} A reference to the document object used for selection manipulation.
+   */
+  get document() {
+    return this[documentValue];
+  }
+
+  /**
+   * @param {DocumentOrShadowRoot} value A reference to the document object used for selection manipulation.
+   */
+  set document(value) {
+    const old = this[documentValue];
+    if (old === value) {
+      return;
+    }
+    this[documentValue] = value;
+    this.editor.document = value;
+  }
+
+  /**
    * @param {HTMLElement} root The top most container of the editor, 
    * usually the one that is marked as `contentEditable`.
+   * @param {DocumentOrShadowRoot} documentRef A reference to the document object used for selection manipulation.
    */
-  constructor(root) {
+  constructor(root, documentRef) {
     super();
     this.root = root;
 
@@ -17,6 +38,7 @@ export class MarkdownEditor extends EditorPluginsConsumer {
      * A reference to a helper class that manages the selection in the editor.
      */
     this.editor = new ContentEditableEditor();
+    this.document = documentRef;
 
     document.execCommand("defaultParagraphSeparator", false, "p");
     this[keydownHandler] = this[keydownHandler].bind(this);
@@ -47,17 +69,17 @@ export class MarkdownEditor extends EditorPluginsConsumer {
    * @param {KeyboardEvent} e
    */
   [keydownHandler](e) {
-    this.executeAction('keydown', this.root, this.editor, e);
+    this.executeAction('keydown', this.root, this.editor, this.document, e);
     switch (e.code) {
       case 'Backquote':
       case 'Enter': 
       case 'Space':
       case 'Backspace':
       case 'Delete':
-        this.executeAction(e.code, this.root, this.editor, e);
+        this.executeAction(e.code, this.root, this.editor, this.document, e);
         break;
       case 'NumpadEnter':
-        this.executeAction('Enter', this.root, this.editor, e);
+        this.executeAction('Enter', this.root, this.editor, this.document, e);
         break;
       default: 
         // console.log('code', e.code)
@@ -73,7 +95,7 @@ export class MarkdownEditor extends EditorPluginsConsumer {
       const ae = ct.activeElement;
       // checks whether the active element of the document is either the editor or its child.
       if (ae === this.root || this.root.contains(ae)) {
-        this.executeAction('selection', this.root, this.editor);
+        this.executeAction('selection', this.root, this.editor, this.document);
       }
     }
   }

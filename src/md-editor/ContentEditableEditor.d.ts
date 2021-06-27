@@ -1,5 +1,9 @@
 export class ContentEditableEditor {
   /**
+   * A reference to the document object used for selection manipulation.
+   */
+  document: DocumentOrShadowRoot;
+  /**
    * @return The current range from the current selection.
    */
   getRange(): Range;

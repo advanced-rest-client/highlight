@@ -1,12 +1,32 @@
+export const documentValue = Symbol('documentValue');
+
 /**
  * A helper class to manipulate the content of a contentEditable.
  */
 export class ContentEditableEditor {
   /**
+   * @returns {DocumentOrShadowRoot} A reference to the document object used for selection manipulation.
+   */
+  get document() {
+    return this[documentValue] || document;
+  }
+
+  /**
+   * @param {DocumentOrShadowRoot} value A reference to the document object used for selection manipulation.
+   */
+  set document(value) {
+    const old = this[documentValue];
+    if (old === value) {
+      return;
+    }
+    this[documentValue] = value;
+  }
+
+  /**
    * @return {Range|null} The current range from the current selection.
    */
   getRange() {
-    const selection = window.getSelection();
+    const selection = this.document.getSelection();
     if (!selection.rangeCount) {
       return null;
     }
@@ -22,7 +42,7 @@ export class ContentEditableEditor {
     content.focus();
     const node = this.findFirstText(content);
     if (!node) {
-      const selection = window.getSelection();
+      const selection = this.document.getSelection();
       selection.removeAllRanges();
       return;
     }
@@ -45,7 +65,7 @@ export class ContentEditableEditor {
       range.selectNodeContents(selectable);
     }
     range.collapse();
-    const selection = window.getSelection();
+    const selection = this.document.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
   }
@@ -138,7 +158,7 @@ export class ContentEditableEditor {
       range.setStart(selectable, 0);
     }
     range.collapse();
-    const selection = window.getSelection();
+    const selection = this.document.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
   }
@@ -150,7 +170,7 @@ export class ContentEditableEditor {
   selectContent(node) {
     const range = new Range();
     range.selectNodeContents(node);
-    const selection = window.getSelection();
+    const selection = this.document.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
   }

@@ -20,4 +20,8 @@ export interface PluginExecuteOptions {
    * The list of arguments passed to the plugin. The schema depends on the action.
    */
   args: any;
+  /**
+   * A reference to the document object used for selection manipulation.
+   */
+  document: DocumentOrShadowRoot;
 }

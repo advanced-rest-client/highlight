@@ -19,7 +19,7 @@ describe('SpacePlugin', () => {
     let element = /** @type HTMLElement */ (null);
     beforeEach(async () => {
       element = await containerFixture(html`-`);
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new SpacePlugin());
       editor.listen();
     });
@@ -69,7 +69,7 @@ describe('SpacePlugin', () => {
     let element = /** @type HTMLElement */ (null);
     beforeEach(async () => {
       element = await containerFixture(html`1.`);
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new SpacePlugin());
       editor.listen();
     });
@@ -124,7 +124,7 @@ describe('SpacePlugin', () => {
 
       beforeEach(async () => {
         element = await containerFixture(html`<p>${new Array(level).fill('#').join('')}</p>`);
-        editor = new MarkdownEditor(element);
+        editor = new MarkdownEditor(element, document);
         editor.registerPlugin(new SpacePlugin());
         editor.listen();
       });
@@ -163,7 +163,7 @@ describe('SpacePlugin', () => {
       it('inserts the header as a direct child', async () => {
         editor.unlisten();
         element = await containerFixture(html`${new Array(level).fill('#').join('')}`);
-        editor = new MarkdownEditor(element);
+        editor = new MarkdownEditor(element, document);
         editor.registerPlugin(new SpacePlugin());
         editor.listen();
         editor.editor.focusFirstAvailable(element);
@@ -191,7 +191,7 @@ describe('SpacePlugin', () => {
      */
     async function setupEditor(content) {
       element = await containerFixture(content);
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new SpacePlugin());
       editor.listen();
     }
@@ -290,7 +290,7 @@ describe('SpacePlugin', () => {
      */
     async function setupEditor(content) {
       element = await containerFixture(content);
-      editor = new MarkdownEditor(element);
+      editor = new MarkdownEditor(element, document);
       editor.registerPlugin(new SpacePlugin());
       editor.listen();
     }

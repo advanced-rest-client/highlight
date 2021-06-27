@@ -40,7 +40,7 @@
       "properties": [
         {
           "name": "styles",
-          "type": "CSSResult"
+          "type": "CSSResult | CSSResult[]"
         },
         {
           "name": "markdown",
@@ -111,6 +111,211 @@
         },
         {
           "name": "markedloaderror"
+        }
+      ]
+    },
+    {
+      "name": "markdown-editor",
+      "path": "./markdown-editor.js",
+      "attributes": [
+        {
+          "name": "toolbar",
+          "description": "When set it renders a toolbar with commands.",
+          "type": "boolean"
+        },
+        {
+          "name": "contextToolbarEnabled",
+          "description": "When set it registers the default text context tooltip.",
+          "type": "boolean"
+        },
+        {
+          "name": "debug",
+          "description": "Whether the editor is in the debug mode.",
+          "type": "boolean"
+        },
+        {
+          "name": "markdown",
+          "description": "The markdown source that should be rendered by this element.",
+          "type": "string"
+        },
+        {
+          "name": "breaks",
+          "description": "Enable GFM line breaks (regular newlines instead of two spaces for breaks)",
+          "type": "boolean"
+        },
+        {
+          "name": "pedantic",
+          "description": "Conform to obscure parts of markdown.pl as much as possible. Don't fix\nany of the original markdown bugs or poor behavior.",
+          "type": "boolean"
+        },
+        {
+          "name": "sanitize",
+          "description": "Sanitize the output. Ignore any HTML that has been input.",
+          "type": "boolean"
+        },
+        {
+          "name": "disableRemoteSanitization",
+          "description": "If true, disables the default sanitization of any markdown received by\na request and allows fetched un-sanitized markdown\n\ne.g. fetching markdown via `src` that has HTML.\nNote: this value overrides `sanitize` if a request is made.",
+          "type": "boolean"
+        },
+        {
+          "name": "smartypants",
+          "description": "Use \"smart\" typographic punctuation for things like quotes and dashes.",
+          "type": "boolean"
+        }
+      ],
+      "properties": [
+        {
+          "name": "document",
+          "description": "A reference to the document object used for selection manipulation.",
+          "type": "DocumentOrShadowRoot"
+        },
+        {
+          "name": "contextToolbar",
+          "description": "Registers a context selection toolbar plugin",
+          "type": "EditorPlugin"
+        },
+        {
+          "name": "toolbar",
+          "attribute": "toolbar",
+          "description": "When set it renders a toolbar with commands.",
+          "type": "boolean"
+        },
+        {
+          "name": "contextToolbarEnabled",
+          "attribute": "contextToolbarEnabled",
+          "description": "When set it registers the default text context tooltip.",
+          "type": "boolean"
+        },
+        {
+          "name": "debug",
+          "attribute": "debug",
+          "description": "Whether the editor is in the debug mode.",
+          "type": "boolean"
+        },
+        {
+          "name": "editor",
+          "type": "MarkdownEditor"
+        },
+        {
+          "name": "styles",
+          "type": "CSSResult | CSSResult[]"
+        },
+        {
+          "name": "markdown",
+          "attribute": "markdown",
+          "description": "The markdown source that should be rendered by this element.",
+          "type": "string"
+        },
+        {
+          "name": "breaks",
+          "attribute": "breaks",
+          "description": "Enable GFM line breaks (regular newlines instead of two spaces for breaks)",
+          "type": "boolean"
+        },
+        {
+          "name": "pedantic",
+          "attribute": "pedantic",
+          "description": "Conform to obscure parts of markdown.pl as much as possible. Don't fix\nany of the original markdown bugs or poor behavior.",
+          "type": "boolean"
+        },
+        {
+          "name": "renderer",
+          "description": "Function used to customize a renderer based on the [API specified in the\nMarked\nlibrary](https://github.com/chjj/marked#overriding-renderer-methods).\nIt takes one argument: a marked renderer object, which is mutated by the function.",
+          "type": "Function"
+        },
+        {
+          "name": "sanitize",
+          "attribute": "sanitize",
+          "description": "Sanitize the output. Ignore any HTML that has been input.",
+          "type": "boolean"
+        },
+        {
+          "name": "sanitizer",
+          "description": "Function used to customize a sanitize behavior.\nIt takes one argument: element String without text Contents.\n\ne.g. `<div>` `<a href=\"/\">` `</p>'.\nNote: To enable this function, must set `sanitize` to true.\nWARNING: If you are using this option to un-trusted text, you must to\nprevent XSS Attacks.",
+          "type": "Function"
+        },
+        {
+          "name": "disableRemoteSanitization",
+          "attribute": "disableRemoteSanitization",
+          "description": "If true, disables the default sanitization of any markdown received by\na request and allows fetched un-sanitized markdown\n\ne.g. fetching markdown via `src` that has HTML.\nNote: this value overrides `sanitize` if a request is made.",
+          "type": "boolean"
+        },
+        {
+          "name": "smartypants",
+          "attribute": "smartypants",
+          "description": "Use \"smart\" typographic punctuation for things like quotes and dashes.",
+          "type": "boolean"
+        },
+        {
+          "name": "outputElement",
+          "type": "HTMLElement"
+        }
+      ],
+      "events": [
+        {
+          "name": "marked-render-complete"
+        },
+        {
+          "name": "markedrendercomplete"
+        },
+        {
+          "name": "marked-loadend"
+        },
+        {
+          "name": "markedloaded"
+        },
+        {
+          "name": "syntax-highlight"
+        },
+        {
+          "name": "markedloaderror"
+        }
+      ]
+    },
+    {
+      "name": "prism-highlight",
+      "path": "./prism-highlight.js",
+      "description": "Syntax highlighting via Prism\n\n### Example\n\n```html\n<prism-highlight id=\"c1\" lang=\"markdown\"></prism-highlight>\n<script>\n  document.querySelector('#c1').code = '# Test highlight';\n&lt;/script>\n```\n\nThe `lang` attribute is required and the component will not start parsing data without it.\n\nChanging the `lang` and `code` properties together, do it in less than 10 ms.\nThe element is set to commit changes after this time period. Otherwise it may display\nold and new code due to the asynchronous nature of the code highlighter.",
+      "attributes": [
+        {
+          "name": "code",
+          "description": "A data to be highlighted and rendered.",
+          "type": "string"
+        },
+        {
+          "name": "lang",
+          "description": "Prism supported language.",
+          "type": "string"
+        },
+        {
+          "name": "raw",
+          "description": "When set it ignores syntax highlighting and only renders the code.",
+          "type": "boolean"
+        }
+      ],
+      "properties": [
+        {
+          "name": "styles",
+          "type": "CSSResult[]"
+        },
+        {
+          "name": "code",
+          "attribute": "code",
+          "description": "A data to be highlighted and rendered.",
+          "type": "string"
+        },
+        {
+          "name": "lang",
+          "attribute": "lang",
+          "description": "Prism supported language.",
+          "type": "string"
+        },
+        {
+          "name": "raw",
+          "attribute": "raw",
+          "description": "When set it ignores syntax highlighting and only renders the code.",
+          "type": "boolean"
         }
       ]
     }
