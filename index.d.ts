@@ -6,3 +6,4 @@ export { default as MarkdownEditorElement } from './src/MarkdownEditorElement';
 export { EditorPlugin } from './src/md-editor/EditorPlugin';
 export { EditorPluginsConsumer } from './src/md-editor/EditorPluginsConsumer';
 export { MarkdownEditor } from './src/md-editor/MarkdownEditor';
+export { PrismHighlighter } from './src/PrismHighlighter.js';
