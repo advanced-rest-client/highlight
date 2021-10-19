@@ -44,7 +44,7 @@ describe('DeletePlugin', () => {
       const range = new Range();
       range.selectNodeContents(p.firstChild);
       range.setStart(p.firstChild, 2);
-      const selection = editor.document.getSelection();
+      const selection = /** @type Document */ (editor.document).getSelection();
       selection.removeAllRanges();
       selection.addRange(range);
       await sendKeys({

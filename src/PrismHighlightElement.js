@@ -13,7 +13,7 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 import { LitElement, html } from 'lit-element';
-import { WorkspaceEvents, RequestEvents } from '@advanced-rest-client/arc-events';
+import { WorkspaceEvents, RequestEvents } from '@advanced-rest-client/events';
 import prismStyles from './styles/PrismStyles.js';
 import elementStyles from './styles/PrismHighlight.js';
 import { PrismHighlighter } from './PrismHighlighter.js';

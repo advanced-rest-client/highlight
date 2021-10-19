@@ -1,7 +1,7 @@
 import { html } from 'lit-html';
 import { DemoPage } from '@advanced-rest-client/arc-demo-helper';
 import '@advanced-rest-client/arc-demo-helper/arc-interactive-demo.js';
-import '@anypoint-web-components/anypoint-button/anypoint-button.js';
+import '@anypoint-web-components/awc/anypoint-button.js';
 import '../markdown-editor.js';
 import { MarkdownStyles } from '../index.js';
 

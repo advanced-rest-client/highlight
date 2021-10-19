@@ -1,6 +1,6 @@
 import { fixture, assert, aTimeout, html } from '@open-wc/testing';
 import sinon from 'sinon';
-import { RequestEventTypes, WorkspaceEventTypes } from '@advanced-rest-client/arc-events';
+import { RequestEventTypes, WorkspaceEventTypes } from '@advanced-rest-client/events';
 import '../../prism-highlight.js';
 import { outputElement } from '../../src/PrismHighlightElement.js';
 

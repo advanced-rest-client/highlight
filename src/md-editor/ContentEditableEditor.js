@@ -26,7 +26,8 @@ export class ContentEditableEditor {
    * @return {Range|null} The current range from the current selection.
    */
   getRange() {
-    const selection = this.document.getSelection();
+    const doc = /** @type Document */ (this.document);
+    const selection = doc.getSelection();
     if (!selection.rangeCount) {
       return null;
     }
@@ -42,7 +43,8 @@ export class ContentEditableEditor {
     content.focus();
     const node = this.findFirstText(content);
     if (!node) {
-      const selection = this.document.getSelection();
+      const doc = /** @type Document */ (this.document);
+      const selection = doc.getSelection();
       selection.removeAllRanges();
       return;
     }
@@ -65,7 +67,8 @@ export class ContentEditableEditor {
       range.selectNodeContents(selectable);
     }
     range.collapse();
-    const selection = this.document.getSelection();
+    const doc = /** @type Document */ (this.document);
+    const selection = doc.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
   }
@@ -158,7 +161,8 @@ export class ContentEditableEditor {
       range.setStart(selectable, 0);
     }
     range.collapse();
-    const selection = this.document.getSelection();
+    const doc = /** @type Document */ (this.document);
+    const selection = doc.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
   }
@@ -170,7 +174,8 @@ export class ContentEditableEditor {
   selectContent(node) {
     const range = new Range();
     range.selectNodeContents(node);
-    const selection = this.document.getSelection();
+    const doc = /** @type Document */ (this.document);
+    const selection = doc.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
   }

@@ -1,6 +1,6 @@
 import { html } from 'lit-element';
 import HtmlMd from '@pawel-up/html.md';
-import '@anypoint-web-components/anypoint-button/anypoint-icon-button.js';
+import '@anypoint-web-components/awc/anypoint-icon-button.js';
 import ArcMarkedElement, { outputElement } from "./ArcMarkedElement.js";
 import { MarkdownEditor } from './md-editor/MarkdownEditor.js';
 import editorStyles from './styles/MdEditor.js';
@@ -221,7 +221,8 @@ export default class MarkdownEditorElement extends ArcMarkedElement {
    * Handles the create link action from the toolbar.
    */
   [createLinkAction]() {
-    const range = this.document.getSelection().getRangeAt(0);
+    const doc = /** @type Document */ (this.document);
+    const range = doc.getSelection().getRangeAt(0);
     const { startContainer, endContainer, startOffset, endOffset, collapsed } = range;
     if (collapsed) {
       // todo: render UI to ask for the link
