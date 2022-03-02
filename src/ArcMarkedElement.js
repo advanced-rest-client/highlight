@@ -356,13 +356,13 @@ export default class ArcMarkedElement extends LitElement {
       this.renderer(renderer);
     }
     const data = this.markdown;
-    const opts = {
+    const opts = /** @type marked.MarkedOptions */ ({
       renderer,
       highlight: this[highlightMarkdown].bind(this),
       breaks: this.breaks,
       pedantic: this.pedantic,
-      smartypants: this.smartypants
-    };
+      smartypants: this.smartypants,
+    });
     let out = marked(data, opts);
     if (this.sanitize) {
       if (this.sanitizer) {
