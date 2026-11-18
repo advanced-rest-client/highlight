@@ -1,6 +1,9 @@
-import { marked } from 'marked';
+import { marked, Renderer } from 'marked';
 
 /** @typedef {import('marked').marked} Marked */
+
+const compatibleMarked = (source, options) => marked.parse(source, options);
+compatibleMarked.Renderer = Renderer;
 
 // @ts-ignore
 if (!window.marked) {
@@ -8,7 +11,7 @@ if (!window.marked) {
   // Modulizer More info:
   // https://github.com/PolymerElements/marked-element/issues/81
   // @ts-ignore
-  window.marked = marked;
+  window.marked = compatibleMarked;
 }
 
-export default /** @type Marked */ (marked);
+export default /** @type Marked */ (compatibleMarked);
